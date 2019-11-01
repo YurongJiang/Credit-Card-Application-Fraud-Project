@@ -1,0 +1,186 @@
+---
+title: "Untitled"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(lubridate)
+```
+
+```{r}
+df = read_csv('/Users/Desktop/DSO562_Fraud Analytics/project3/applications data.csv')
+```
+
+```{r}
+df$date = ymd(df$date)
+df$dob = ymd(df$dob)
+```
+
+```{r}
+df %>%
+  group_by(date)%>%
+  summarize(count = n()) %>%
+  ggplot(aes(x = date,y = count))+
+  geom_line()+
+  xlab('Date')+
+  ylab('Count')+
+  ggtitle('The Number of Events per Day')
+```
+
+```{r}
+df %>%
+  group_by(date)%>%
+  summarize(count = sum(fraud_label)) %>%
+  ggplot(aes(x = date,y = count))+
+  geom_line()+
+  xlab('Date')+
+  ylab('Count')+
+  ggtitle('The Number of Fraud per Day')
+```
+
+
+```{r}
+df$ssn = as.factor(df$ssn)
+df %>%
+  filter(ssn!=999999999) %>%
+  group_by(ssn)%>%
+  summarise(count=n()) %>%
+  arrange(desc(count)) %>%
+  head(20) %>%
+  ggplot(aes(x=reorder(ssn,count),y=count)) +
+  geom_col()+
+  coord_flip() +
+  xlab('SSN') +
+  ylab('Count') +
+  ggtitle('The Number of Events under each SSN (excluding 999999999)')
+```
+
+```{r}
+sum(df$ssn == 999999999)
+```
+
+
+```{r}
+df %>%
+  group_by(firstname)%>%
+  summarise(count=n()) %>%
+  arrange(desc(count)) %>%
+  head(20) %>%
+  ggplot(aes(x=reorder(firstname,count),y=count)) +
+  geom_col()+
+  coord_flip() +
+  xlab('First Name') +
+  ylab('Count') +
+  ggtitle('The Number of Events under each First Name')
+```
+
+
+```{r}
+df %>%
+  group_by(lastname)%>%
+  summarise(count=n()) %>%
+  arrange(desc(count)) %>%
+  head(20) %>%
+  ggplot(aes(x=reorder(lastname,count),y=count)) +
+  geom_col()+
+  coord_flip() +
+  xlab('Last Name') +
+  ylab('Count') +
+  ggtitle('The Number of Events under each Last Name')
+```
+
+
+```{r}
+df %>%
+  filter(address!= '123 MAIN ST') %>%
+  group_by(address)%>%
+  summarise(count=n()) %>%
+  arrange(desc(count)) %>%
+  head(20) %>%
+  ggplot(aes(x=reorder(address,count),y=count)) +
+  geom_col()+
+  coord_flip() +
+  xlab('Address')+
+  ylab('Count') +
+  ggtitle('The Number of Events under each Address')
+
+sum(df$address=='123 MAIN ST')
+```
+
+
+```{r}
+df %>%
+  group_by(zip5)%>%
+  summarise(count=n()) %>%
+  arrange(desc(count)) %>%
+  head(20) %>%
+  ggplot(aes(x=reorder(zip5,count),y=count)) +
+  geom_col()+
+  coord_flip() +
+  xlab('ZIP Code')+
+  ylab('Count') +
+  ggtitle('The Number of Events under each ZIP Code')
+```
+
+```{r}
+df %>%
+  group_by(dob)%>%
+  summarize(count = n()) %>%
+  arrange(desc(count))
+
+df %>%
+  group_by(dob)%>%
+  summarize(count = n()) %>%
+  ggplot(aes(x = dob,y = count))+
+  geom_line()+
+  xlab('Date')+
+  ylab('Count')+
+  ggtitle('The Number of Events per Day')
+```
+
+
+```{r}
+sum(df$homephone==9999999999)
+df %>%
+  filter(homephone!=9999999999) %>%
+  group_by(homephone)%>%
+  summarise(count=n()) %>%
+  arrange(desc(count)) %>%
+  head(20) %>%
+  ggplot(aes(x=reorder(homephone,count),y=count)) +
+  geom_col()+
+  coord_flip() +
+  xlab('Phone Number')+
+  ylab('Count') +
+  ggtitle('The Number of Events under each Phone Number')
+```
+
+```{r}
+table(df$fraud_label)
+```
+
+
+```{r}
+df %>%
+  #filter(ssn==999999999) %>%
+  #filter(homephone==9999999999) %>%
+  filter(address=='123 MAIN ST') %>%
+  group_by(fraud_label) %>%
+  summarise(count=n())
+  table(df$fraud_label)
+```
+
+
+```{r}
+95/16840
+24/4237
+388/78124
+```
+
+
+
